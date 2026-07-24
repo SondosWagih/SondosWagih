@@ -1,0 +1,406 @@
+/* ==========================================================
+   TABLET.CSS
+   شغال على التابلت واللابتوب مع بعض (769px لحد 1440px)
+   لازم يتحط في الـ HTML بعد style.css:
+   <link rel="stylesheet" href="style.css">
+   <link rel="stylesheet" href="tablet.css">
+   <link rel="stylesheet" href="mobile.css">
+
+   -----------------------------------------------------------
+   بنية الملف:
+   1) قواعد عامة (شغالة سواء landscape أو portrait) — كل الأقسام
+      بتستخدم clamp() مبني على vw عشان تتصغر بالتناسق مع بعضها
+      البعض مع أي تغيير في عرض الشاشة، مفيش قسم بيتصغر لوحده.
+   2) قسم Works و Services فقط عندهم فرق حقيقي بين landscape
+      وportrait (زي ما طلبتِ): التصميم الأصلي (carousel بصور
+      جانبية / timeline بعمودين) بيفضل شغال في الوضع العرضي،
+      وبيتحول لتصميم مبسط شبه الموبايل بس في الوضع الطولي، لأن
+      التصميمين دول بالتحديد قائمين على حسابات مسافات ثابتة
+      مش بتلحق تتصغر بأمان تحت عرض معين.
+   ========================================================== */
+
+@media (min-width:769px) and (max-width:1440px){
+
+    :root{
+        --page-padding: clamp(32px, 5vw, 100px);
+    }
+
+
+    /* ============ HEADER ============ */
+
+    nav{
+        gap: clamp(20px, 3vw, 48px);
+    }
+
+    nav a{
+        font-size: clamp(16px, 1.6vw, 22px);
+    }
+
+    .cv-btn{
+        font-size: clamp(16px, 1.6vw, 22px);
+        padding: 8px 14px;
+    }
+
+
+    /* ============ HERO ============ */
+
+    .hero{
+        min-height:auto;
+        margin-top: 60px;
+        padding: 0 var(--page-padding) 60px;
+    }
+
+    .hero-title{
+        font-size: clamp(90px, 16vw, 200px);
+        letter-spacing:0;
+    }
+
+    .hero-year{
+        top: -30px;
+        font-size: clamp(36px, 4vw, 56px);
+    }
+
+    /* أهم سطر هنا: كانت width:100vw وده اللي بيسبب overflow */
+    .hero-subtitle-wrap{
+        width:100%;
+        height:auto;
+        margin-top:-20px;
+    }
+
+    .hero-subtitle{
+        font-size: clamp(120px, 22vw, 300px);
+    }
+
+    /* المسافة تحت الزرار كانت 40px بس، بقت مسافة حقيقية واضحة
+       بتتمدد مع حجم الشاشة عشان تفصل الزرار عن الاسم/السوشيال تحته */
+    .hero-cta-wrap{
+        position:static;
+        transform:none;
+        display:flex;
+        justify-content:center;
+        margin: 16px 0 clamp(90px, 14vw, 160px);
+    }
+
+    .hero-footer{
+        position:static;
+        left:auto;
+        right:auto;
+        margin-top: 24px;
+    }
+
+    .hero-name{
+        font-size: clamp(24px, 2.6vw, 35px);
+    }
+
+
+    /* ============ ABOUT ============ */
+
+    .about{
+        padding: 80px var(--page-padding) 60px;
+    }
+
+    .about-title{
+        font-size: clamp(90px, 16vw, 200px);
+    }
+
+    .about-name-ghost{
+        font-size: clamp(120px, 22vw, 240px);
+        top:88%;
+    }
+
+    .about-subtitle{
+        font-size: clamp(28px, 3.2vw, 40px);
+        margin-top: 100px;
+    }
+
+    .about-text{
+        font-size: clamp(17px, 1.8vw, 22px);
+    }
+
+    .about-badges{
+        flex-wrap:wrap;
+        gap:20px;
+        justify-content:center;
+    }
+
+
+    /* ============ SKILLS ============
+       بناءً على طلب المستخدم: تصميم الـ skills (4 أعمدة، المستطيلات
+       متدرجة الحجم، والخطوط الفاصلة بين الكروت) ما بيتغيرش عن الأصلي
+       في التابلت/اللابتوب، الشاشة كبيرة كفاية لعرضه زي الديسكتوب. */
+
+
+    /* ============ SERVICES ============
+       التصميم الأصلي (عمودين، خط تايم لاين، دواير) بيفضل شغال في
+       الوضع العرضي بس القياسات بقت مرنة (clamp) بدل أرقام ثابتة،
+       عشان تتصغر بنفس نسبة باقي الصفحة. في الوضع الطولي بيتحول
+       لتصميم مبسط عمود واحد (تحت في قسم الـ portrait). */
+
+    .services{
+        margin-top: clamp(90px, 14vw, 184px);
+    }
+
+    .services-title{
+        font-size: clamp(56px, 10vw, 124px);
+    }
+
+    .services-subtitle{
+        font-size: clamp(16px, 1.8vw, 22px);
+        margin: 8px 0 clamp(70px, 12vw, 184px);
+    }
+
+    .services-columns{
+        gap: clamp(24px, 6vw, 100px);
+        padding-bottom: clamp(50px, 8vw, 107px);
+    }
+
+    .service-col{
+        max-width: clamp(240px, 40vw, 460px);
+    }
+
+    .service-item{
+        height: clamp(28px, 3vw, 39px);
+        margin-bottom: clamp(56px, 9vw, 114px);
+    }
+
+    .service-dot{
+        width: clamp(28px, 3vw, 39px);
+        height: clamp(28px, 3vw, 39px);
+        outline-width: clamp(6px, 1vw, 10px);
+    }
+
+    .service-content{
+        max-width: clamp(170px, 28vw, 260px);
+    }
+
+    .text-right .service-content{
+        left: calc(50% + clamp(24px, 3.5vw, 43.5px));
+    }
+
+    .text-left .service-content{
+        right: calc(50% + clamp(24px, 3.5vw, 43.5px));
+    }
+
+    .service-name{
+        font-size: clamp(16px, 2vw, 26px);
+        white-space: normal;
+        height:auto;
+        line-height:1.3;
+    }
+
+    .service-desc{
+        font-size: clamp(14px, 1.6vw, 22px);
+    }
+
+    /* كانت max-width:100% وده اللي عمل المستطيل حوالين available/btn
+       واسع جداً على الجوانب. رجّعناها لحجم واقعي بيتقلص مع الشاشة
+       الضيقة بدل ما يفضل ممطوط لعرض الحاوية كله */
+    .services-cta-bar{
+        max-width: min(856px, 90%);
+        height:auto;
+        flex-wrap:wrap;
+        gap: clamp(14px, 2vw, 24px);
+        padding: clamp(14px, 2vw, 20px) clamp(16px, 2.5vw, 24px);
+    }
+
+    .services-availability{
+        font-size: clamp(15px, 1.8vw, 25px);
+    }
+
+    .services-cta-btn{
+        font-size: clamp(15px, 1.6vw, 22px);
+    }
+
+
+    /* ============ WORKS ============
+       التصميم الأصلي بتاع الديسكتوب (صورة مركزية + طرف من الصورتين
+       الجانبيتين بادي على الجنب) بيفضل شغال هنا في الوضع العرضي،
+       بس بمقاسات مناسبة للتابلت/اللابتوب. ارتفاع الـ stage بقى
+       بيتحسب مباشرة من عرض الصورة (--main-width) بدل رقم تخميني،
+       عشان الـ footer (العنوان + النجوم) میا يختفيش أبداً بسبب
+       overflow:hidden لو الحساب غلط. */
+
+    .works{
+        padding: 90px 0 100px;
+    }
+
+    .works-title{
+        font-size: clamp(90px, 16vw, 200px);
+    }
+
+    .works-ghost{
+        font-size: clamp(120px, 22vw, 240px);
+    }
+
+   .works-carousel{
+        --main-width: min(760px, 70vw);
+        --peek: 70px;
+    }
+
+    /* 0.5625 = نسبة 16:9 بتاعة الصورة، + 96px مساحة الـ footer
+       (عنوان + نجوم) عشان محدش يتقطع تحت */
+    .works-stage{
+        height: calc(var(--main-width) * 0.5625 + 96px);
+        min-height:auto;
+    }
+
+    .works-arrow{
+        width: 50px;
+        height: 50px;
+        font-size: 18px;
+    }
+
+    .works-prev{
+        left: calc(50% - (var(--main-width) / 2) - 60px);
+    }
+
+    .works-next{
+        right: calc(50% - (var(--main-width) / 2) - 60px);
+    }
+
+
+    /* ============ CONTACT ============ */
+
+    .contact{
+        padding: 90px var(--page-padding) 100px;
+    }
+
+    .contact-title{
+        font-size: clamp(90px, 16vw, 200px);
+    }
+
+    .contact-ghost{
+        font-size: clamp(100px, 18vw, 200px);
+        z-index:2;
+    }
+
+    .contact-form{
+        max-width: 100%;
+    }
+
+
+    /* ============ FOOTER ============ */
+
+    .site-footer{
+        padding: 32px var(--page-padding) 24px;
+    }
+
+}
+
+
+/* ==========================================================
+   الوضع الطولي (Portrait) بس، في نفس نطاق التابلت/اللابتوب.
+   هنا بس الـ Works والـ Services بيتحولوا لتصميم مبسط شبه
+   الموبايل، لأن التصميمين دول قائمين على حسابات مسافات ثابتة
+   (peek/offset) مش بتتحمل عرض ضيق، وأي محاولة نصغرها بنفس
+   المنطق العرضي كانت بتخلي المحتوى يتقطع برة الفريم.
+   باقي الأقسام (Hero, About, Skills, Contact) مبنية أصلاً على
+   clamp() مرتبط بـ vw، فهي بتتصغر تلقائياً وبنفس النسبة مع تضيق
+   الشاشة من غير ما نحتاج تكرار أي قواعد ليها هنا.
+   ========================================================== */
+
+@media (min-width:769px) and (max-width:1440px) and (orientation:portrait){
+
+    /* ---------- WORKS: تصميم مبسط، صورة مركزية واحدة واضحة ---------- */
+
+    .works{
+        padding: 80px 0 60px;
+    }
+
+    .works-carousel{
+        --main-width: min(680px, 95vw);
+        --peek: 0px;
+        padding-bottom: 70px;
+    }
+
+    .works-stage{
+        height: calc(var(--main-width) * 0.5625 + 90px);
+    }
+
+    .works-left,
+    .works-right{
+        opacity:0;
+        filter:blur(3px);
+        pointer-events:none;
+    }
+
+    .works-center{
+        filter:blur(0);
+    }
+
+    .works-arrow{
+        top:auto;
+        bottom:0;
+        transform:none;
+        width:48px;
+        height:48px;
+        font-size:18px;
+        left:auto;
+        right:auto;
+    }
+
+    .works-prev{
+        left: calc(50% - 60px);
+    }
+
+    .works-next{
+        left: calc(50% + 12px);
+    }
+
+
+    /* ---------- SERVICES: عمود واحد بدل التايم لاين المزدوج ----------
+       نفس فكرة .service-item في mobile.css بالظبط: بدل الحسابات
+       الدقيقة (position:absolute + offset ثابت) اللي مش بتلحق تتصغر
+       بأمان، بنخلي كل خدمة صف واحد بسيط (دوت + نص جنبه) من غير أي
+       رياضيات مسافات، فمستحيل يحصل قطع مهما ضاق العرض. */
+
+    .services-columns{
+        flex-direction:column;
+        gap:0;
+        padding-bottom: 24px;
+    }
+
+    .service-col::before{
+        display:none;
+    }
+
+    .service-item{
+        height:auto;
+        margin-bottom: 32px;
+        padding-left: 56px;
+    }
+
+    .service-item:last-child{
+        margin-bottom:0;
+    }
+
+    .service-dot{
+        left:0;
+        top:2px;
+        transform:none;
+        width:32px;
+        height:32px;
+        outline-width:8px;
+    }
+
+    .text-right .service-content,
+    .text-left .service-content{
+        position:static;
+        left:auto;
+        right:auto;
+        text-align:left;
+        max-width:100%;
+    }
+
+    .service-name{
+        font-size:22px;
+        white-space:normal;
+        height:auto;
+        line-height:1.3;
+    }
+
+    .service-desc{
+        font-size:17px;
+    }
+
+}
