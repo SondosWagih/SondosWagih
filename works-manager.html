@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Works Manager — SON</title>
+<style>
+  :root{
+    --bg:#0F1014;
+    --panel:#17181D;
+    --panel-2:#1E2027;
+    --line:#2A2C33;
+    --accent:#9271DC;
+    --accent-soft:rgba(146,113,220,.15);
+    --text:#F3F2F7;
+    --text-dim:#9A9AA5;
+    --danger:#E5675F;
+    --ok:#69C285;
+    font-family:'Segoe UI', Tahoma, sans-serif;
+  }
+
+  *{box-sizing:border-box;}
+
+  body{
+    margin:0;
+    background:
+      radial-gradient(1200px 600px at 20% -10%, rgba(146,113,220,.10), transparent 60%),
+      var(--bg);
+    color:var(--text);
+    min-height:100vh;
+    padding:32px 20px 80px;
+  }
+
+  .wrap{max-width:1100px; margin:0 auto;}
+
+  .top{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:16px;
+    margin-bottom:28px;
+    flex-wrap:wrap;
+  }
+
+  .top h1{
+    margin:0 0 6px;
+    font-size:26px;
+    letter-spacing:.3px;
+  }
+
+  .top p{
+    margin:0;
+    color:var(--text-dim);
+    font-size:14px;
+    max-width:560px;
+    line-height:1.6;
+  }
+
+  .badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:var(--accent-soft);
+    color:var(--accent);
+    border:1px solid rgba(146,113,220,.35);
+    padding:6px 12px;
+    border-radius:100px;
+    font-size:12.5px;
+    white-space:nowrap;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns: 1.15fr .85fr;
+    gap:20px;
+  }
+
+  @media (max-width:860px){
+    .grid{grid-template-columns:1fr;}
+  }
+
+  .card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:22px;
+  }
+
+  .card h2{
+    margin:0 0 4px;
+    font-size:16px;
+  }
+
+  .card .hint{
+    margin:0 0 18px;
+    font-size:13px;
+    color:var(--text-dim);
+    line-height:1.6;
+  }
+
+  label{
+    display:block;
+    font-size:13px;
+    color:var(--text-dim);
+    margin-bottom:6px;
+  }
+
+  input[type=text]{
+    width:100%;
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    color:var(--text);
+    padding:10px 12px;
+    border-radius:10px;
+    font-size:14px;
+    outline:none;
+  }
+
+  input[type=text]:focus{border-color:var(--accent);}
+
+  .field{margin-bottom:16px;}
+
+  .stars{
+    display:flex;
+    gap:6px;
+    font-size:22px;
+    user-select:none;
+  }
+
+  .stars span{
+    cursor:pointer;
+    color:#3A3C44;
+    transition:color .15s;
+  }
+
+  .stars span.filled{color:#F4C452;}
+
+  .file-row{
+    display:flex;
+    gap:10px;
+    align-items:center;
+  }
+
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    background:var(--accent);
+    color:#0F1014;
+    border:none;
+    padding:10px 16px;
+    border-radius:10px;
+    font-size:13.5px;
+    font-weight:600;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+
+  .btn:hover{filter:brightness(1.08);}
+
+  .btn.secondary{
+    background:transparent;
+    color:var(--text);
+    border:1px solid var(--line);
+  }
+
+  .btn.secondary:hover{border-color:var(--accent); color:var(--accent);}
+
+  .btn.danger{
+    background:transparent;
+    color:var(--danger);
+    border:1px solid rgba(229,103,95,.4);
+  }
+
+  .btn.small{padding:6px 11px; font-size:12.5px; border-radius:8px;}
+
+  .crop-frame{
+    position:relative;
+    width:100%;
+    aspect-ratio:16/9;
+    border-radius:10px;
+    overflow:hidden;
+    background:
+      repeating-conic-gradient(#23252b 0% 25%, #1b1c21 0% 50%) 50% / 20px 20px;
+    border:1px solid var(--line);
+    cursor:grab;
+    margin-bottom:12px;
+  }
+
+  .crop-frame.dragging{cursor:grabbing;}
+
+  .crop-frame .backdrop{
+    position:absolute;
+    inset:0;
+    background-repeat:no-repeat;
+    background-size:cover;
+    background-position:center;
+    filter:blur(18px);
+    transform:scale(1.15);
+    pointer-events:none;
+  }
+
+  .crop-frame .fill{
+    position:absolute;
+    inset:0;
+    background-repeat:no-repeat;
+    pointer-events:none;
+  }
+
+  .crop-frame .empty-msg{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--text-dim);
+    font-size:13px;
+    text-align:center;
+    padding:20px;
+  }
+
+  .sliders{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:14px;
+    margin-bottom:18px;
+  }
+
+  @media (max-width:520px){
+    .sliders{grid-template-columns:1fr;}
+  }
+
+  .sliders label{margin-bottom:4px;}
+
+  input[type=range]{
+    width:100%;
+    accent-color:var(--accent);
+  }
+
+  .actions{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+
+  hr{
+    border:none;
+    border-top:1px solid var(--line);
+    margin:22px 0;
+  }
+
+  .list{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+
+  .item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:10px;
+  }
+
+  .item .thumb{
+    position:relative;
+    width:74px;
+    height:42px;
+    border-radius:6px;
+    background-color:#26272e;
+    flex-shrink:0;
+    background-image:
+      repeating-conic-gradient(#2b2c33 0% 25%, #212228 0% 50%);
+    background-size:10px 10px;
+    overflow:hidden;
+  }
+
+  .item .thumb .thumb-bg{
+    position:absolute;
+    inset:0;
+    background-repeat:no-repeat;
+    background-size:cover;
+    background-position:center;
+    filter:blur(6px);
+    transform:scale(1.15);
+  }
+
+  .item .thumb .thumb-fg{
+    position:absolute;
+    inset:0;
+    background-repeat:no-repeat;
+  }
+
+  .item .meta{flex:1; min-width:0;}
+
+  .item .meta .name{
+    font-size:14px;
+    font-weight:600;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  .item .meta .path{
+    font-size:12px;
+    color:var(--text-dim);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    direction:ltr;
+    text-align:right;
+  }
+
+  .item .stars-mini{font-size:11px; color:#F4C452; margin-top:2px;}
+
+  .item .item-actions{
+    display:flex;
+    gap:6px;
+    flex-shrink:0;
+  }
+
+  .item .item-actions button{
+    background:transparent;
+    border:1px solid var(--line);
+    color:var(--text-dim);
+    width:30px;
+    height:30px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:13px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .item .item-actions button:hover{border-color:var(--accent); color:var(--accent);}
+  .item .item-actions button.danger:hover{border-color:var(--danger); color:var(--danger);}
+
+  .empty-list{
+    color:var(--text-dim);
+    font-size:13.5px;
+    text-align:center;
+    padding:30px 10px;
+    border:1px dashed var(--line);
+    border-radius:12px;
+  }
+
+  textarea{
+    width:100%;
+    min-height:230px;
+    background:#0B0C10;
+    border:1px solid var(--line);
+    border-radius:10px;
+    color:#B9E6C4;
+    font-family:'Consolas','Courier New',monospace;
+    font-size:12.5px;
+    line-height:1.6;
+    padding:14px;
+    direction:ltr;
+    text-align:left;
+    resize:vertical;
+  }
+
+  .copy-toast{
+    position:fixed;
+    bottom:24px;
+    left:50%;
+    transform:translateX(-50%) translateY(20px);
+    background:var(--ok);
+    color:#0F1014;
+    padding:10px 18px;
+    border-radius:100px;
+    font-size:13.5px;
+    font-weight:600;
+    opacity:0;
+    transition:opacity .25s, transform .25s;
+    pointer-events:none;
+    z-index:10;
+  }
+
+  .copy-toast.show{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+  }
+
+  .copy-toast.error{background:var(--danger);}
+
+  .steps{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin:0 0 18px;
+    padding:14px 16px;
+    background:var(--panel-2);
+    border-radius:12px;
+    border:1px solid var(--line);
+  }
+
+  .steps div{
+    font-size:13px;
+    color:var(--text-dim);
+    line-height:1.7;
+  }
+
+  .steps b{color:var(--text);}
+
+  .sync-note{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:12.5px;
+    color:var(--ok);
+    margin-top:10px;
+  }
+
+  .sync-note .dot{
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:var(--ok);
+    flex-shrink:0;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="top">
+    <div>
+      <h1>Works Manager</h1>
+      <p>عدّلي مشاريع قسم Works هنا — كل تعديل بيتحفظ فوراً، وأي وقت تفتحي Index.html (من نفس الفولدر، في نفس المتصفح) هتلاقي التعديلات ظاهرة تلقائياً من غير Copy/Paste.</p>
+    </div>
+    <span class="badge">● works-manager v3 — حفظ تلقائي</span>
+  </div>
+
+  <div class="steps">
+    <div>1. <b>ارفعي الصورة</b> بس عشان تعاينيها وتحددي القص — الرفع بيفضل في المتصفح بتاعك، مش بيتخزن في أي سيرفر.</div>
+    <div>2. اكتبي <b>مسار الصورة</b> زي ما هو موجود عندك في فولدر <span style="direction:ltr;display:inline-block">image/</span> (لازم ترفعي/تحطي نفس الملف هناك يدوياً).</div>
+    <div>3. اسحبي جوه المربع لتحديد الجزء الظاهر، وزوّمي بالشريط، بعدين دوسي حفظ — هيتخزن أوتوماتيك، ومش محتاجة تعملي حاجة تانية.</div>
+    <div>4. <b>مهم جداً:</b> ده بيتخزن جوه المتصفح بتاعك على جهازك بس (localStorage)، عشان تعاينيه بسرعة وانتِ شغالة. لو نشرتي الموقع أونلاين، الزوار (وأي جهاز تاني) مش هيشوفوا نفس التعديلات دي — عشان تبان لكل حد، لازم قبل النشر تنسخي "الكود الجاهز" تحت وتستبدلي بيه الـ <span style="direction:ltr;display:inline-block">worksData</span> في script.js.</div>
+    <div>5. علشان الحفظ التلقائي يشتغل أصلاً، لازم يكون <span style="direction:ltr;display:inline-block">works-manager.html</span> و <span style="direction:ltr;display:inline-block">Index.html</span> في نفس الفولدر ومفتوحين من نفس المتصفح.</div>
+  </div>
+
+  <div class="grid">
+
+    <div class="card">
+      <h2 id="editorTitle">إضافة / تعديل مشروع</h2>
+      <p class="hint">اسحبي الصورة جوه الإطار (زي الفيسبوك) لتحديد الجزء اللي هيبان، وزوّمي بالشريط اللي تحت.</p>
+
+      <div class="field">
+        <label>عنوان المشروع</label>
+        <input type="text" id="fTitle" placeholder="مثال: Brand Poster">
+      </div>
+
+      <div class="field">
+        <label>التقييم</label>
+        <div class="stars" id="fStars">
+          <span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span><span data-v="4">★</span><span data-v="5">★</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>مسار الصورة (اللي هيتحط في الكود)</label>
+        <input type="text" id="fPath" placeholder="image/1.jpg">
+      </div>
+
+      <div class="field">
+        <label>رفع صورة للمعاينة والقص (اختياري)</label>
+        <div class="file-row">
+          <input type="file" id="fFile" accept="image/*">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>معاينة القص (16:9) — اسحبي بالماوس، وزوّمي بالشريط</label>
+        <div class="crop-frame" id="cropFrame">
+          <div class="backdrop" id="cropBackdrop"></div>
+          <div class="fill" id="cropFill"></div>
+          <div class="empty-msg" id="cropEmpty">ارفعي صورة فوق عشان تظهر هنا المعاينة</div>
+        </div>
+
+        <div class="sliders">
+          <div>
+            <label>الوضع الأفقي: <span id="xVal">50</span>%</label>
+            <input type="range" id="xRange" min="0" max="100" value="50">
+          </div>
+          <div>
+            <label>الوضع الرأسي: <span id="yVal">50</span>%</label>
+            <input type="range" id="yRange" min="0" max="100" value="50">
+          </div>
+          <div>
+            <label>الزوم: <span id="zVal">100</span>%</label>
+            <input type="range" id="zRange" min="50" max="300" value="100">
+          </div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn" id="saveBtn">حفظ المشروع</button>
+        <button class="btn secondary" id="cancelBtn">إلغاء</button>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <h2>المشاريع الحالية</h2>
+        <p class="hint">دي اللي هتظهر في كاروسيل Works بنفس الترتيب.</p>
+        <div class="list" id="itemsList"></div>
+        <div class="sync-note"><span class="dot"></span><span id="syncLabel">متزامنة مع Index.html على المتصفح ده</span></div>
+      </div>
+
+      <div class="card" style="margin-top:20px;">
+        <h2>الكود الجاهز (للنشر النهائي فقط)</h2>
+        <p class="hint">التعديلات بتتطبق تلقائياً محلياً عندك. الكود ده تحتاجيه بس وقت ما تكوني جاهزة تنشري الموقع أونلاين — انسخيه واستبدلي بيه الـ <span style="direction:ltr;display:inline-block">defaultWorksData</span> الموجودة فوق في script.js.</p>
+        <textarea id="codeOut" readonly></textarea>
+        <div class="actions" style="margin-top:12px;">
+          <button class="btn" id="copyBtn">نسخ الكود</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="copy-toast" id="toast">اتنسخ✓</div>
+
+<script>
+(function(){
+
+  // لازم يتطابق تماماً مع نفس المفتاح في script.js
+  const WORKS_STORAGE_KEY = "son-works-v1";
+
+  // بدّلنا crypto.randomUUID() بالدالة دي، لأن crypto.randomUUID() بترمي
+  // خطأ وتوقف كل السكريبت لو الملف اتفتح مباشرة (دبل كليك / file://)
+  function makeId(){
+    if (window.crypto && typeof crypto.randomUUID === 'function'){
+      try { return crypto.randomUUID(); } catch (e) {}
+    }
+    return Date.now() + '-' + Math.random().toString(36).slice(2);
+  }
+
+  const defaultItems = [
+    { id: makeId(), title: "Brand Poster",     rating: 4, image: "image/1.jpg", posX: 50, posY: 15, zoom: 100, preview: null },
+    { id: makeId(), title: "Product Retouch",  rating: 3, image: "image/2.jpg", posX: 50, posY: 50, zoom: 100, preview: null },
+    { id: makeId(), title: "Social Media Set", rating: 5, image: "image/3.jpg", posX: 50, posY: 50, zoom: 100, preview: null },
+    { id: makeId(), title: "Magazine Cover",   rating: 5, image: "image/4.jpg", posX: 50, posY: 50, zoom: 100, preview: null },
+  ];
+
+  function parsePosition(pos){
+    if (typeof pos !== 'string') return { x: 50, y: 50 };
+    const parts = pos.trim().split(/\s+/).map(p => parseFloat(p));
+    return {
+      x: isNaN(parts[0]) ? 50 : parts[0],
+      y: isNaN(parts[1]) ? 50 : parts[1],
+    };
+  }
+
+  function loadInitialItems(){
+    try {
+      const raw = localStorage.getItem(WORKS_STORAGE_KEY);
+      if (raw){
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length){
+          return parsed.map(it => {
+            const { x, y } = parsePosition(it.position);
+            return {
+              id: makeId(),
+              title: it.title || '',
+              rating: it.rating || 5,
+              image: it.image || '',
+              posX: x,
+              posY: y,
+              zoom: it.zoom || 100,
+              preview: null,
+            };
+          });
+        }
+      }
+    } catch (e) {
+      // بيانات تالفة، نتجاهلها ونرجع للافتراضي
+    }
+    return defaultItems;
+  }
+
+  let items = loadInitialItems();
+
+  let editingId = null;
+  let currentPreview = null;
+
+  const fTitle = document.getElementById('fTitle');
+  const fPath = document.getElementById('fPath');
+  const fFile = document.getElementById('fFile');
+  const fStars = document.getElementById('fStars');
+  const cropFrame = document.getElementById('cropFrame');
+  const cropBackdrop = document.getElementById('cropBackdrop');
+  const cropFill = document.getElementById('cropFill');
+  const cropEmpty = document.getElementById('cropEmpty');
+  const xRange = document.getElementById('xRange');
+  const yRange = document.getElementById('yRange');
+  const zRange = document.getElementById('zRange');
+  const xVal = document.getElementById('xVal');
+  const yVal = document.getElementById('yVal');
+  const zVal = document.getElementById('zVal');
+  const itemsList = document.getElementById('itemsList');
+  const codeOut = document.getElementById('codeOut');
+  const editorTitle = document.getElementById('editorTitle');
+  const toast = document.getElementById('toast');
+
+  let currentRating = 5;
+  let posX = 50, posY = 50, zoom = 100;
+
+  const dimCache = new Map();
+  function loadDims(src){
+    return new Promise((resolve) => {
+      if (!src) return resolve(null);
+      if (dimCache.has(src)) return resolve(dimCache.get(src));
+      const img = new Image();
+      img.onload = () => {
+        const d = { w: img.naturalWidth, h: img.naturalHeight };
+        dimCache.set(src, d);
+        resolve(d);
+      };
+      img.onerror = () => resolve(null);
+      img.src = src;
+    });
+  }
+
+  function computeCoverSize(cw, ch, iw, ih, zoomPct){
+    const containerRatio = cw / ch;
+    const imgRatio = iw / ih;
+    let baseW, baseH;
+    if (imgRatio > containerRatio){
+      baseH = ch;
+      baseW = ch * imgRatio;
+    } else {
+      baseW = cw;
+      baseH = cw / imgRatio;
+    }
+    const scale = (zoomPct || 100) / 100;
+    return { w: baseW * scale, h: baseH * scale };
+  }
+
+  function renderStarsInput(){
+    [...fStars.children].forEach(s => {
+      s.classList.toggle('filled', +s.dataset.v <= currentRating);
+    });
+  }
+  fStars.addEventListener('click', e => {
+    if (e.target.tagName === 'SPAN'){
+      currentRating = +e.target.dataset.v;
+      renderStarsInput();
+    }
+  });
+
+  let cropRequestToken = 0;
+
+  async function updateCropVisual(){
+    xVal.textContent = Math.round(posX);
+    yVal.textContent = Math.round(posY);
+    zVal.textContent = Math.round(zoom);
+    xRange.value = posX;
+    yRange.value = posY;
+    zRange.value = zoom;
+
+    if (!currentPreview){
+      cropBackdrop.style.backgroundImage = 'none';
+      cropFill.style.backgroundImage = 'none';
+      cropEmpty.style.display = 'flex';
+      return;
+    }
+
+    cropEmpty.style.display = 'none';
+    cropBackdrop.style.backgroundImage = `url(${currentPreview})`;
+    cropFill.style.backgroundImage = `url(${currentPreview})`;
+    cropFill.style.backgroundPosition = posX + '% ' + posY + '%';
+
+    const myToken = ++cropRequestToken;
+    const dims = await loadDims(currentPreview);
+    if (myToken !== cropRequestToken) return;
+
+    if (!dims){
+      cropFill.style.backgroundSize = 'cover';
+      return;
+    }
+    const rect = cropFrame.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    const { w, h } = computeCoverSize(rect.width, rect.height, dims.w, dims.h, zoom);
+    cropFill.style.backgroundSize = `${w}px ${h}px`;
+  }
+
+  xRange.addEventListener('input', () => { posX = +xRange.value; updateCropVisual(); });
+  yRange.addEventListener('input', () => { posY = +yRange.value; updateCropVisual(); });
+  zRange.addEventListener('input', () => { zoom = +zRange.value; updateCropVisual(); });
+
+  window.addEventListener('resize', () => updateCropVisual());
+
+  fFile.addEventListener('change', () => {
+    const file = fFile.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      currentPreview = reader.result;
+      updateCropVisual();
+    };
+    reader.readAsDataURL(file);
+  });
+
+  fPath.addEventListener('change', () => {
+    if (currentPreview) return;
+    if (fPath.value.trim()){
+      currentPreview = fPath.value.trim();
+      updateCropVisual();
+    }
+  });
+
+  let dragging = false;
+  let dragStart = {x:0, y:0, posX:50, posY:50};
+
+  function startDrag(clientX, clientY){
+    dragging = true;
+    cropFrame.classList.add('dragging');
+    dragStart = { x: clientX, y: clientY, posX, posY };
+  }
+  function moveDrag(clientX, clientY){
+    if (!dragging) return;
+    const rect = cropFrame.getBoundingClientRect();
+    const dx = clientX - dragStart.x;
+    const dy = clientY - dragStart.y;
+    posX = clamp(dragStart.posX - (dx / rect.width) * 100, 0, 100);
+    posY = clamp(dragStart.posY - (dy / rect.height) * 100, 0, 100);
+    updateCropVisual();
+  }
+  function endDrag(){
+    dragging = false;
+    cropFrame.classList.remove('dragging');
+  }
+
+  function clamp(v, min, max){ return Math.max(min, Math.min(max, v)); }
+
+  cropFrame.addEventListener('mousedown', e => startDrag(e.clientX, e.clientY));
+  window.addEventListener('mousemove', e => moveDrag(e.clientX, e.clientY));
+  window.addEventListener('mouseup', endDrag);
+
+  cropFrame.addEventListener('touchstart', e => {
+    const t = e.touches[0];
+    startDrag(t.clientX, t.clientY);
+  }, {passive:true});
+  window.addEventListener('touchmove', e => {
+    const t = e.touches[0];
+    moveDrag(t.clientX, t.clientY);
+  }, {passive:true});
+  window.addEventListener('touchend', endDrag);
+
+  cropFrame.addEventListener('wheel', e => {
+    if (!currentPreview) return;
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -5 : 5;
+    zoom = clamp(zoom + delta, 50, 300);
+    updateCropVisual();
+  }, {passive:false});
+
+  function resetEditor(){
+    editingId = null;
+    editorTitle.textContent = 'إضافة / تعديل مشروع';
+    fTitle.value = '';
+    fPath.value = '';
+    fFile.value = '';
+    currentRating = 5;
+    posX = 50; posY = 50; zoom = 100;
+    currentPreview = null;
+    renderStarsInput();
+    updateCropVisual();
+  }
+
+  document.getElementById('cancelBtn').addEventListener('click', resetEditor);
+
+  document.getElementById('saveBtn').addEventListener('click', () => {
+    const title = fTitle.value.trim();
+    const image = fPath.value.trim();
+    if (!title || !image){
+      alert('اكتبي العنوان ومسار الصورة الأول');
+      return;
+    }
+    if (editingId){
+      const it = items.find(i => i.id === editingId);
+      Object.assign(it, { title, image, rating: currentRating, posX, posY, zoom, preview: currentPreview });
+    } else {
+      items.push({ id: makeId(), title, image, rating: currentRating, posX, posY, zoom, preview: currentPreview });
+    }
+    resetEditor();
+    renderList();
+    renderCode();
+    persistToStorage();
+  });
+
+  function renderList(){
+    itemsList.innerHTML = '';
+    if (!items.length){
+      itemsList.innerHTML = '<div class="empty-list">لسه مفيش مشاريع، ضيفي واحد من الفورم اللي فوق</div>';
+      return;
+    }
+    items.forEach((it, idx) => {
+      const row = document.createElement('div');
+      row.className = 'item';
+      row.innerHTML = `
+        <div class="thumb" id="thumb-${it.id}">
+          <div class="thumb-bg"></div>
+          <div class="thumb-fg"></div>
+        </div>
+        <div class="meta">
+          <div class="name">${escapeHtml(it.title)}</div>
+          <div class="path">${escapeHtml(it.image)}</div>
+          <div class="stars-mini">${'★'.repeat(it.rating)}${'☆'.repeat(5-it.rating)}</div>
+        </div>
+        <div class="item-actions">
+          <button data-act="up" title="لأعلى">↑</button>
+          <button data-act="down" title="لأسفل">↓</button>
+          <button data-act="edit" title="تعديل">✎</button>
+          <button data-act="del" class="danger" title="حذف">✕</button>
+        </div>
+      `;
+      row.querySelector('[data-act=up]').addEventListener('click', () => { moveItem(idx, -1); });
+      row.querySelector('[data-act=down]').addEventListener('click', () => { moveItem(idx, 1); });
+      row.querySelector('[data-act=edit]').addEventListener('click', () => { editItem(it.id); });
+      row.querySelector('[data-act=del]').addEventListener('click', () => { deleteItem(it.id); });
+      itemsList.appendChild(row);
+
+      const thumbEl = row.querySelector(`#thumb-${it.id}`);
+      const bgEl = thumbEl.querySelector('.thumb-bg');
+      const fgEl = thumbEl.querySelector('.thumb-fg');
+      const src = it.preview || it.image;
+      bgEl.style.backgroundImage = `url(${src})`;
+      fgEl.style.backgroundImage = `url(${src})`;
+      fgEl.style.backgroundPosition = `${it.posX}% ${it.posY}%`;
+      loadDims(src).then(dims => {
+        if (!dims){ fgEl.style.backgroundSize = 'cover'; }
+        else {
+          const { w, h } = computeCoverSize(74, 42, dims.w, dims.h, it.zoom || 100);
+          fgEl.style.backgroundSize = `${w}px ${h}px`;
+        }
+      });
+    });
+  }
+
+  function moveItem(idx, dir){
+    const newIdx = idx + dir;
+    if (newIdx < 0 || newIdx >= items.length) return;
+    [items[idx], items[newIdx]] = [items[newIdx], items[idx]];
+    renderList();
+    renderCode();
+    persistToStorage();
+  }
+
+  function editItem(id){
+    const it = items.find(i => i.id === id);
+    if (!it) return;
+    editingId = id;
+    editorTitle.textContent = 'تعديل: ' + it.title;
+    fTitle.value = it.title;
+    fPath.value = it.image;
+    currentRating = it.rating;
+    posX = it.posX; posY = it.posY; zoom = it.zoom || 100;
+    currentPreview = it.preview || it.image;
+    renderStarsInput();
+    updateCropVisual();
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  function deleteItem(id){
+    items = items.filter(i => i.id !== id);
+    renderList();
+    renderCode();
+    persistToStorage();
+  }
+
+  function escapeHtml(s){
+    return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function toExportItem(it){
+    return {
+      title: it.title,
+      rating: it.rating,
+      image: it.image,
+      position: `${Math.round(it.posX)}% ${Math.round(it.posY)}%`,
+      zoom: Math.round(it.zoom || 100),
+    };
+  }
+
+  function renderCode(){
+    const lines = items.map(it => {
+      const e = toExportItem(it);
+      return `  { title: ${JSON.stringify(e.title)}, rating: ${e.rating}, image: ${JSON.stringify(e.image)}, position: ${JSON.stringify(e.position)}, zoom: ${e.zoom} },`;
+    });
+    codeOut.value = `const defaultWorksData = [\n${lines.join('\n')}\n];`;
+  }
+
+  function persistToStorage(){
+    try {
+      const data = items.map(toExportItem);
+      localStorage.setItem(WORKS_STORAGE_KEY, JSON.stringify(data));
+      showToast('اتحفظ ✓ — افتحي Index.html وهتلاقيه محدّث');
+    } catch (e) {
+      showToast('تعذر الحفظ التلقائي (المساحة ممتلئة؟) — استخدمي نسخ الكود بدل كده', true);
+    }
+  }
+
+  function showToast(msg, isError){
+    toast.textContent = msg;
+    toast.classList.toggle('error', !!isError);
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2200);
+  }
+
+  document.getElementById('copyBtn').addEventListener('click', () => {
+    codeOut.select();
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(codeOut.value).then(() => {
+        showToast('اتنسخ ✓');
+      }).catch(() => {
+        showToast('حددنا الكود، دوسي Ctrl+C');
+      });
+    } else {
+      try {
+        document.execCommand('copy');
+        showToast('اتنسخ ✓');
+      } catch (e) {
+        showToast('حددنا الكود، دوسي Ctrl+C');
+      }
+    }
+  });
+
+  renderStarsInput();
+  updateCropVisual();
+  renderList();
+  renderCode();
+
+})();
+</script>
+
+</body>
+</html>
