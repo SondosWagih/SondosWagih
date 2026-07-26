@@ -27,9 +27,9 @@ const WORKS_STORAGE_KEY = "son-works-v1";
 // zoom هنا نسبة مئوية: 100 = مطابق تماماً لـ cover العادي، أكتر من كده
 // = تقريب زوم إن، أقل من 100 = تبعيد زوم أوت.
 const defaultWorksData = [
-  { title: "Magazine Cover", rating: 5, image: "image/4.jpg", position: "50% 23%", zoom: 75 },
+  { title: "Magazine Cover", rating: 5, image: "image/4.jpg", position: "50% 23%", zoom: 70 },
+  { title: "Brand Poster", rating: 4, image: "image/3.jpg", position: "50% 47%", zoom: 75 },
   { title: "Product Retouch", rating: 4, image: "image/2.jpg", position: "50% 50%", zoom: 100 },
-  { title: "Brand Poster", rating: 4, image: "image/3.jpg", position: "50% 28%", zoom: 74 },
   { title: "Social Media Set", rating: 4, image: "image/1.jpg", position: "50% 36%", zoom: 100 },
 ];
 
