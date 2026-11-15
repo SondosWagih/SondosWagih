@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Permissions and receivers are added in Phases 7-9. No INTERNET permission by design (offline-only). -->
+
+    <!-- No INTERNET permission by design (offline-only). -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+
     <application
         android:name=".PlannerApp"
         android:allowBackup="false"
@@ -9,12 +15,16 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.Planner">
-        <activity android:name=".MainActivity" android:exported="true">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <!-- Persists the per-app language chosen in Settings (needed below API 33). -->
         <service
             android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
@@ -22,5 +32,20 @@
             android:exported="false">
             <meta-data android:name="autoStoreLocales" android:value="true" />
         </service>
+
+        <!-- Alarms planned by the app itself (classes, exams, overdue assignments, timer end). -->
+        <receiver android:name=".notifications.AlarmReceiver" android:exported="false" />
+        <!-- Pause / Resume / Stop buttons of the timer notification. -->
+        <receiver android:name=".notifications.TimerActionReceiver" android:exported="false" />
+        <!-- Restores every alarm after restart, app update, clock or time-zone change, permission change. -->
+        <receiver android:name=".notifications.SystemEventReceiver" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>

@@ -1,16 +1,13 @@
-## Hi there 👋
+# Planner
 
-<!--
-**SondosWagih/SondosWagih** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+Offline Android app (Kotlin, Compose, Material 3, Room, DataStore). More sections will be added over time;
+the first one is **Study**:
 
-Here are some ideas to get you started:
+- **Schedule** – weekly timetable (a row every half hour from 8 AM to 8 PM, days across the top, classes as cards).
+  A class can be repeated on several days at once.
+- **Courses** – name, course code, instructor and a colour (themed palettes, colour wheel, exact HEX code).
+- **Exams** – the same timetable look, week by week; the title defaults to "<exam type> <course>".
+- **Assignments** – due date/time, priority, completion.
+- **Sessions** – study timers: set hours / minutes / seconds, press Start and the countdown runs.
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+Arabic (RTL) and English (LTR), light and dark themes. No internet permission, all data stays on the device.
